@@ -11,7 +11,7 @@ class App extends Component {
         
       <div className="container">
         <Table characterData={characters} removeCharacter={this.removeCharacter} />
-        <Form />
+        <Form handleSubmit={this.handleSubmit} />
       </div>
     );
   }
@@ -20,7 +20,9 @@ class App extends Component {
       characters : []
     }
     
-  
+  handleSubmit = character => {
+    this.setState({ characters: [...this.state.characters, character] })
+ };
 
   removeCharacter = index => {
     const { characters } = this.state
