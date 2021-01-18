@@ -5,6 +5,10 @@ import axios from 'axios';
 
 class App extends Component {
 
+  state = {
+    characters : []
+  };
+
   componentDidMount() {
     axios.get('http://localhost:5000/users')
      .then(res => {
@@ -18,9 +22,10 @@ class App extends Component {
  }
 
  handleSubmit = character => {
-  this.makePostCall(character).then( callResult => {
-     if (callResult === true) {
-        this.setState({ characters: [...this.state.characters, character] });
+  this.makePostCall(character).then(callResult => {
+    console.log(callResult);
+     if (callResult) {
+        this.setState({ characters: [...this.state.characters, callResult] });
      }
   });
 }
@@ -28,8 +33,9 @@ class App extends Component {
 makePostCall(character){
   return axios.post('http://localhost:5000/users', character)
    .then(function (response) {
-     console.log(response);
-     return (response.status === 200);
+     //console.log(response.data);
+     if(response.status === 201)
+      return (response.data);
    })
    .catch(function (error) {
      console.log(error);
@@ -37,30 +43,14 @@ makePostCall(character){
    });
 }
 
-  render() {
-    const { characters } = this.state;
-    
-    return (
-        
-      <div className="container">
-        <Table characterData={characters} removeCharacter={this.removeCharacter} />
-        <Form handleSubmit={this.handleSubmit} />
-      </div>
-    );
-  }
-
   
-  
-  state = {
-    characters : []
-  }
-    
-//   handleSubmit = character => {
-//     this.setState({ characters: [...this.state.characters, character] })
-//  };
-
   removeCharacter = index => {
     const { characters } = this.state
+    axios.delete('http://localhost:5000/users/' + characters[index]['id'])
+    .then(function (response) {
+      console.log(response.data);
+      return(response.data, response.status === 200);
+    })
   
     this.setState({
       characters: characters.filter((character, i) => {
@@ -68,7 +58,17 @@ makePostCall(character){
       }),
     })
   }
-}
 
+
+  render() {
+    const { characters } = this.state;
+    return (
+      <div className="container">
+        <Table characterData={characters} removeCharacter={this.removeCharacter} />
+        <Form handleSubmit={this.handleSubmit} />
+      </div>
+    );
+  }
+}
 
 export default App
