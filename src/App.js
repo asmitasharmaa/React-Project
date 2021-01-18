@@ -16,7 +16,7 @@ class App extends Component {
        this.setState({ characters });
      })
      .catch(function (error) {
-       //Not handling the error. Just logging into the console.
+       // Not handling the error. Just logging into the console.
        console.log(error);
      });
  }
@@ -47,18 +47,17 @@ makePostCall(character){
   removeCharacter = index => {
     const { characters } = this.state
     axios.delete('http://localhost:5000/users/' + characters[index]['id'])
-    .then(function (response) {
+    .then(response =>  {
       console.log(response.data);
-      return(response.data, response.status === 200);
-    })
-  
-    this.setState({
-      characters: characters.filter((character, i) => {
-        return i !== index
-      }),
+      if(response.status === 204){
+        this.setState({
+          characters: characters.filter((character, i) => {
+            return i !== index;
+          }),
+        })
+      }
     })
   }
-
 
   render() {
     const { characters } = this.state;
