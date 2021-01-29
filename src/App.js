@@ -46,7 +46,7 @@ makePostCall(character){
   
   removeCharacter = index => {
     const { characters } = this.state
-    axios.delete('http://localhost:5000/users/' + characters[index]['id'])
+    axios.delete('http://localhost:5000/users/' + characters[index]['_id'])
     .then(response =>  {
       console.log(response.data);
       if(response.status === 204){
